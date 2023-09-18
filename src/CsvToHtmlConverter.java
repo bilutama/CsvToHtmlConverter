@@ -66,18 +66,18 @@ public class CsvToHtmlConverter {
                     if (currentCharIndex == 0 && isNewCell) {
                         writer.println(ROW_OPEN_TAG);
 
-                        // Обработка если первая ячейка в строке пустая
+                        // Process if the first cell in a row is empty
                         if (currentChar == SEPARATOR) {
                             writer.print(CELL_OPEN_TAG);
                             writer.println(CELL_CLOSE_TAG);
                         }
                     }
 
-                    // Обработка начала новой ячейки по флагу
+                    // Process the beginning fo a new cell by flag
                     if (isNewCell) {
                         writer.print(CELL_OPEN_TAG);
 
-                        // Проверка и финализация ячейки, если она пустая
+                        // Checking and finalizing a cell if it is empty
                         if (currentChar == SEPARATOR) {
                             if (nextChar == SEPARATOR) {
                                 writer.println(CELL_CLOSE_TAG);
@@ -115,10 +115,10 @@ public class CsvToHtmlConverter {
                         continue;
                     }
 
-                    // Блок кода для режима чтения separatorMode, т.е. не в кавычках
+                    // Code block for separatorMode reading mode,i.e. not in quotes
                     if (separatorMode) {
-                        // Если nextChar - разделитель, то
-                        // записываем символ и финализируем ячейку
+                        // If nextChar is a separator then
+                        // write the char and finalizing the cell
                         if (nextChar == SEPARATOR) {
                             writer.print(getStringWithReplacements(currentChar));
                             writer.println(CELL_CLOSE_TAG);
@@ -128,7 +128,8 @@ public class CsvToHtmlConverter {
                             continue;
                         }
 
-                        // Если nextChar - конец строки, финализируем ячейку и строку
+                        // If nextChar is the end of line
+                        // then finalizing the cell and the line
                         if (nextChar == END_OF_STRING) {
                             writer.print(getStringWithReplacements(currentChar));
                             writer.println(CELL_CLOSE_TAG);
@@ -144,15 +145,16 @@ public class CsvToHtmlConverter {
                         continue;
                     }
 
-                    // Блок кода для режима чтения !separatorMode, т.е. когда содержимое ячейки в кавычках
+                    // Code block for reading mode !separatorMode,
+                    // i.e. when the cell contents are in quotes
                     if (currentChar == QUOTES) {
-                        // Если предыдущий символ были экранирующие кавычки,
-                        // то эти кавычки нужно записать и выключить флаг,
+                        // If the previous character was an escape quote,
+                        // then these quotes need to be written down and the flag turned off
                         if (isEscapeQuotes) {
                             writer.print(currentChar);
                             isEscapeQuotes = false;
 
-                            // Если сразу за ними конец строки, записываем тэг разрыва строки.
+                            // If followed by the end of the line, write a line break tag
                             if (nextChar == END_OF_STRING) {
                                 writer.print(BREAK_LINE_TAG);
                             }
@@ -161,14 +163,14 @@ public class CsvToHtmlConverter {
                             continue;
                         }
 
-                        // Если nextChar тоже кавычки, ставим флаг isEscapeQuotes и переходим на следующий символ
+                        // If nextChar is also quotes, set the flag isEscapeQuotes and move to the next char
                         if (nextChar == QUOTES) {
                             isEscapeQuotes = true;
                             ++currentCharIndex;
                             continue;
                         }
 
-                        // Если nextChar - разделитель, то финализируем ячейку
+                        // If nextChar is a separator, then finalizing the cell
                         if (nextChar == SEPARATOR) {
                             writer.println(CELL_CLOSE_TAG);
 
@@ -178,7 +180,7 @@ public class CsvToHtmlConverter {
                             continue;
                         }
 
-                        // Если nextChar - конец строки, то финализируем ячейку и строку
+                        // If nextChar is the end of the line, then finalizing the cell and the line
                         if (nextChar == END_OF_STRING) {
                             writer.println(CELL_CLOSE_TAG);
                             writer.println(ROW_CLOSE_TAG);
@@ -190,9 +192,9 @@ public class CsvToHtmlConverter {
                         }
                     }
 
-                    // Если nextChar - конец строки, то вставляем символ и
-                    // добавляем тэг переноса строки
-                    // Далее строка заканчивается и читается следующая из файла.
+                    // If nextChar is the end of the line,
+                    // then insert the char and add a line break tag.
+                    // Then the line ends and the next one is read from the file.
                     if (nextChar == END_OF_STRING) {
                         writer.print(getStringWithReplacements(currentChar));
                         writer.print(BREAK_LINE_TAG);
@@ -201,8 +203,8 @@ public class CsvToHtmlConverter {
                         continue;
                     }
 
-                    // Если никакое условие не сработало,
-                    // то записываем в файл текущий символ
+                    // If none of the conditions is met,
+                    // write the current char to the file
                     writer.print(getStringWithReplacements(currentChar));
                     ++currentCharIndex;
                 }
