@@ -219,7 +219,7 @@ public class CsvToHtmlConverter {
         }
     }
 
-    public static String getStringWithReplacements(char charToReplace) {
+    private static String getStringWithReplacements(char charToReplace) {
         if (charToReplace == '&') {
             return "&amp;";
         } else if (charToReplace == '<') {
